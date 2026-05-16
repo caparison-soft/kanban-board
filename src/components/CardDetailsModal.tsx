@@ -21,6 +21,11 @@ export const CardDetailsModal: React.FC<{
     const [viewingTaskDetails, setViewingTaskDetails] = useState<{ id: string, type: 'subtask' | 'subsubtask' } | null>(null);
     
     const subtaskStatuses = ["Pending", "In-Progress", "Done"];
+    
+    const labelColors = [
+        '#EF4444', '#F97316', '#EAB308', '#22C55E', '#14B8A6', 
+        '#06B6D4', '#3B82F6', '#8B5CF6', '#A855F7', '#EC4899'
+    ];
 
     const fetchData = useCallback(async () => {
         try {
@@ -152,12 +157,47 @@ export const CardDetailsModal: React.FC<{
                             {lists.map(l => <option key={l.id} value={l.id}>{l.title}</option>)}
                         </select>
                         <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 p-5 rounded-xl space-y-4">
-                            <h4 className="text-xs font-black uppercase text-gray-500">Settings</h4>
+                            <h4 className="text-xs font-black uppercase text-gray-500">Settings Matrix</h4>
                             <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-500">Priority</span>
-                                <button onClick={() => updateField('priority', card.priority === 'High' ? 'Low' : 'High')} className={`font-bold ${card.priority === 'High' ? 'text-rose-500' : 'text-emerald-500'}`}>
-                                    {card.priority || 'Medium'}
+                                <span className="text-gray-500 font-medium">Creator</span>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-6 h-6 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-xs font-bold">
+                                        {card.created_by ? card.created_by.substring(0, 2).toUpperCase() : 'U'}
+                                    </div>
+                                    <span className="font-semibold text-gray-700 dark:text-gray-300 text-xs">User</span>
+                                </div>
+                            </div>
+                            
+                            <div className="flex justify-between items-center text-sm">
+                                <span className="text-gray-500 font-medium">Priority</span>
+                                <button onClick={() => updateField('priority', card.priority === 'High' ? 'Medium' : card.priority === 'Medium' ? 'Low' : 'High')} 
+                                    className={`font-black uppercase text-xs tracking-wider ${card.priority === 'High' ? 'text-rose-500' : card.priority === 'Medium' ? 'text-orange-500' : 'text-emerald-500'}`}>
+                                    ={card.priority || 'MEDIUM'}
                                 </button>
+                            </div>
+
+                            <div className="flex justify-between items-start text-sm pt-2">
+                                <span className="text-gray-500 font-medium mt-1">Label Color</span>
+                                <div className="flex flex-col items-end gap-3">
+                                    {card.label_color && (
+                                        <div className="w-8 h-8 rounded-md shadow-sm border border-black/10" style={{ backgroundColor: card.label_color }}></div>
+                                    )}
+                                    <div className="grid grid-cols-5 gap-2">
+                                        {labelColors.map(color => (
+                                            <button 
+                                                key={color}
+                                                onClick={() => updateField('label_color', color)}
+                                                className={`w-5 h-5 rounded hover:scale-110 transition-transform ${card.label_color === color ? 'ring-2 ring-offset-1 ring-gray-400' : ''}`}
+                                                style={{ backgroundColor: color }}
+                                            />
+                                        ))}
+                                    </div>
+                                    {card.label_color && (
+                                        <button onClick={() => updateField('label_color', null)} className="w-5 h-5 rounded-full border border-gray-300 flex items-center justify-center text-gray-400 hover:text-gray-600 self-start mt-1">
+                                            <X size={12} />
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
