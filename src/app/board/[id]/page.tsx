@@ -86,7 +86,9 @@ const ActiveKanbanBoard = ({ boardId }: { boardId: string }) => {
                 setCurrentUser({ id: session.user.id, email: session.user.email });
                 fetchBoardData(session.access_token, session.user.id);
             } else {
-                router.push('/');
+                // No local session — redirect bounce to the Hub login
+                const currentAppUrl = encodeURIComponent(window.location.href);
+                window.location.href = `https://www.caparisonlab.com/login?next=${currentAppUrl}`;
             }
         });
     }, [fetchBoardData, router, supabaseHub.auth]);

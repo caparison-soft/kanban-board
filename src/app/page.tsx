@@ -22,7 +22,9 @@ export default function KanbanDashboard() {
             setUserId(session.user.id);
             return session.access_token;
         } else {
-            setLoading(false);
+            // No local session — redirect bounce to the Hub login
+            const currentAppUrl = encodeURIComponent(window.location.href);
+            window.location.href = `https://www.caparisonlab.com/login?next=${currentAppUrl}`;
             return null;
         }
     }, [supabaseHub.auth]);
@@ -98,9 +100,10 @@ export default function KanbanDashboard() {
     }
 
     if (!userToken) {
+        // Show a loading state while we redirect to the Hub
         return (
-            <div className="p-8 text-center bg-rose-50 dark:bg-rose-500/10 text-rose-500 rounded-3xl font-black uppercase tracking-widest max-w-2xl mx-auto mt-20">
-                You must be logged into Caparison Lab to access this workspace.
+            <div className="p-8 text-center text-gray-500">
+                Redirecting to Caparison Lab...
             </div>
         );
     }
