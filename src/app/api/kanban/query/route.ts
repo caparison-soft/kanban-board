@@ -40,7 +40,9 @@ export async function POST(request: Request) {
         const adminDb = createKanbanAdminClient();
 
         // 1. All Kanban operations require a board_id to verify authorization
-        const targetBoardId = match?.board_id || payload?.board_id || payload?.[0]?.board_id;
+        // When querying kanban_boards directly, the 'id' field IS the board_id
+        const targetBoardId = match?.board_id || payload?.board_id || payload?.[0]?.board_id
+            || (table === 'kanban_boards' ? (match?.id || payload?.id) : null);
         
         if (!targetBoardId) {
             return NextResponse.json({ ok: false, error: 'board_id is required for security checks' }, { status: 400 });
