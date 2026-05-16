@@ -5,12 +5,14 @@ import { useRouter } from 'next/navigation';
 import { LayoutDashboard, Plus, Lock, Trash2 } from 'lucide-react';
 import { createHubClient } from '../lib/supabase';
 import { KBoard } from '../types';
+import { UserMenu } from '../components/UserMenu';
 
 export default function KanbanDashboard() {
     const [boards, setBoards] = useState<KBoard[]>([]);
     const [loading, setLoading] = useState(true);
     const [userToken, setUserToken] = useState<string | null>(null);
     const [userId, setUserId] = useState<string | null>(null);
+    const [userEmail, setUserEmail] = useState<string | undefined>(undefined);
     
     const router = useRouter();
     const supabaseHub = createHubClient();
@@ -20,6 +22,7 @@ export default function KanbanDashboard() {
         if (session) {
             setUserToken(session.access_token);
             setUserId(session.user.id);
+            setUserEmail(session.user.email);
             return session.access_token;
         } else {
             // No local session — redirect bounce to the Hub login
@@ -110,8 +113,9 @@ export default function KanbanDashboard() {
 
     return (
         <div className="space-y-8 animate-in fade-in duration-700 max-w-[1400px] mx-auto p-8 font-sans text-[#34495E] dark:text-slate-200">
+            {userToken && <UserMenu userToken={userToken} userEmail={userEmail} />}
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-1 border-b border-gray-100 pb-8">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-1 border-b border-gray-100 pb-8 mt-12 md:mt-0">
                 <div className="space-y-2">
                     <h1 className="text-4xl font-bold tracking-tight text-[#34495E] dark:text-slate-200">Kanban Workspaces</h1>
                     <p className="text-sm font-medium text-gray-400 dark:text-slate-500">Independent Micro-Service Deployment</p>

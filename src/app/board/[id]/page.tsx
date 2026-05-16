@@ -14,6 +14,7 @@ import { kanbanQuery } from '../../../lib/api';
 import { KBoard, KList, KCard, KSubtask, KSubSubtask, KActivity, User } from '../../../types';
 import { Card, Modal, SearchableSelect, ConfirmDialog } from '../../../components/ui';
 import { CardDetailsModal } from '../../../components/CardDetailsModal';
+import { UserMenu } from '../../../components/UserMenu';
 
 // Mock list of all users from ERP (In a real system, you'd fetch this from the Hub)
 const MOCK_USERS: User[] = [
@@ -172,6 +173,7 @@ const ActiveKanbanBoard = ({ boardId }: { boardId: string }) => {
 
     return (
         <div className={`h-screen flex flex-col font-sans transition-all overflow-hidden ${board.background_color}`} style={board.background_url ? { backgroundImage: board.background_url.startsWith('http') ? `url(${board.background_url})` : board.background_url, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}>
+            {userToken && <UserMenu userToken={userToken} userEmail={currentUser?.email} />}
             {/* Header */}
             <div className={`h-14 px-4 flex items-center justify-between shrink-0 transition-colors ${board.background_url ? 'bg-black/40 backdrop-blur-md border-b border-white/10' : 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-gray-200 dark:border-slate-800'}`}>
                 <div className="flex items-center gap-3">
