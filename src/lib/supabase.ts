@@ -1,7 +1,9 @@
-import { createClient } from '@supabase/supabase-js';
+import { createBrowserClient } from '@supabase/ssr';
 
-// 1. Hub Client (Frontend Auth)
+// Hub Client (Frontend Auth)
 // Connects to the Caparison Lab main project to read the user's session
+// Uses @supabase/ssr with shared cookie domain so the session set by the Hub
+// is automatically available on all *.caparisonlab.com subdomains.
 export const createHubClient = () => {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -10,7 +12,9 @@ export const createHubClient = () => {
     throw new Error('Missing Caparison Hub Supabase environment variables');
   }
 
-  return createClient(supabaseUrl, supabaseAnonKey);
+  return createBrowserClient(supabaseUrl, supabaseAnonKey, {
+    cookieOptions: process.env.NODE_ENV === 'production' ? { domain: '.caparisonlab.com' } : {},
+  });
 };
 
 // 2. Spoke Client (Backend Data Admin)
