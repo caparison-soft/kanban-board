@@ -37,7 +37,7 @@ export async function GET(request: Request) {
         .select('board_id')
         .eq('user_id', userId);
 
-    const boardIds = memberData ? memberData.map(m => m.board_id) : [];
+    const boardIds = memberData ? memberData.map((m: { board_id: string }) => m.board_id) : [];
 
     let query = adminDb.from('kanban_boards').select('*');
     
