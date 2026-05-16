@@ -1,4 +1,5 @@
 import { createBrowserClient } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js';
 
 // Hub Client (Frontend Auth)
 // Connects to the Caparison Lab main project to read the user's session
